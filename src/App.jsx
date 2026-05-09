@@ -6,6 +6,9 @@ import StadiumDetail from './pages/StadiumDetail'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import ReviewDetail from './pages/ReviewDetail'
+import WriteReview from './pages/WriteReview'
+import Profile from './pages/Profile'
+import EditReview from './pages/EditReview'
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reviews/:id" element={<ReviewDetail />} />
+        <Route path="/stadiums/:id/review" element={<WriteReview />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/reviews/:id/edit" element={<EditReview />} />
       </Routes>
     </div>
   )

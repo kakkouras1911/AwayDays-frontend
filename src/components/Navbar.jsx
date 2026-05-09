@@ -32,7 +32,9 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <span className="text-gray-700 font-medium">Hi, {user.username}!</span>
+                <Link to="/profile" style={{color: '#374151', fontWeight: '500', textDecoration: 'none'}}>
+                  Hi, {user.username}!
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"

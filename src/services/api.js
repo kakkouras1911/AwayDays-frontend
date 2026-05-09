@@ -39,3 +39,5 @@ export const deleteComment = (id) => API.delete(`/comments/${id}`)
 export const likeReview = (reviewId) => API.post(`/likes/review/${reviewId}`)
 export const unlikeReview = (reviewId) => API.delete(`/likes/review/${reviewId}`)
 export const getLikes = (reviewId) => API.get(`/likes/review/${reviewId}`)
+
+export const updateReview = (id, data) => API.put(`/reviews/${id}`, data)
