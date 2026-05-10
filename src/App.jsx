@@ -9,6 +9,7 @@ import ReviewDetail from './pages/ReviewDetail'
 import WriteReview from './pages/WriteReview'
 import Profile from './pages/Profile'
 import EditReview from './pages/EditReview'
+import Leaderboard from './pages/Leaderboard'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/stadiums/:id/review" element={<WriteReview />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/reviews/:id/edit" element={<EditReview />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
     </div>
   )

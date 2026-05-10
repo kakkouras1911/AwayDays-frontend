@@ -41,3 +41,4 @@ export const unlikeReview = (reviewId) => API.delete(`/likes/review/${reviewId}`
 export const getLikes = (reviewId) => API.get(`/likes/review/${reviewId}`)
 
 export const updateReview = (id, data) => API.put(`/reviews/${id}`, data)
+export const getRecentReviews = () => API.get('/reviews/recent')
