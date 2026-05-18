@@ -23,7 +23,6 @@ export default function ReviewDetail() {
         ])
         setReview(reviewRes.data)
         setComments(commentsRes.data)
-
         if (user) {
           const likesRes = await getLikes(id)
           setLikes(likesRes.data)
@@ -77,193 +76,221 @@ export default function ReviewDetail() {
   }
 
   if (loading) return (
-    <div style={{textAlign: 'center', padding: '64px', color: '#6b7280'}}>Loading...</div>
+    <div style={{textAlign: 'center', padding: '80px', color: '#6b7280'}}>
+      <div style={{fontSize: '2rem', marginBottom: '12px'}}>📝</div>
+      Loading...
+    </div>
   )
 
   if (!review) return (
-    <div style={{textAlign: 'center', padding: '64px', color: '#6b7280'}}>Review not found.</div>
+    <div style={{textAlign: 'center', padding: '80px', color: '#6b7280'}}>Review not found.</div>
   )
 
   return (
-    <div style={{maxWidth: '800px', margin: '0 auto', padding: '32px 16px'}}>
+    <div style={{backgroundColor: '#f8f9fa', minHeight: '100vh'}}>
 
-      {/* Back */}
-      <Link to={`/stadiums/${review.stadiumId}`} style={{color: '#2563eb', textDecoration: 'none', fontSize: '0.875rem'}}>
-        ← Back to {review.stadiumName}
-      </Link>
-
-      {/* Review Card */}
-      <div style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '32px', marginTop: '16px', marginBottom: '24px'}}>
-        
-        {/* Header */}
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px'}}>
-          <div>
-            <h1 style={{fontSize: '1.5rem', fontWeight: '800', color: '#111827', marginBottom: '4px'}}>
-              {review.title}
-            </h1>
-            <p style={{color: '#6b7280', fontSize: '0.875rem'}}>
-              by <span style={{fontWeight: '600', color: '#2563eb'}}>{review.username}</span>
-              {review.visitDate && ` · Visited ${new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}`}
-            </p>
-          </div>
-          <div style={{
-            backgroundColor: '#eff6ff',
-            color: '#2563eb',
-            padding: '8px 16px',
-            borderRadius: '999px',
-            fontWeight: '700',
-            fontSize: '1.125rem'
+      {/* Header */}
+      <div style={{
+        background: '#0f3460',
+        backgroundImage: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)',
+        padding: '48px 24px'
+      }}>
+        <div style={{maxWidth: '800px', margin: '0 auto'}}>
+          <Link to={`/stadiums/${review.stadiumId}`} style={{
+            color: '#94a3b8', textDecoration: 'none', fontSize: '0.875rem',
+            display: 'inline-block', marginBottom: '20px'
           }}>
-            ⭐ {parseFloat(review.overallRating).toFixed(1)}
-          </div>
-        </div>
-
-        {/* Content */}
-        <p style={{color: '#374151', lineHeight: '1.8', marginBottom: '24px'}}>
-          {review.content}
-        </p>
-
-        {/* Category Ratings */}
-        {review.categoryRatings && Object.keys(review.categoryRatings).length > 0 && (
-          <div style={{marginBottom: '24px'}}>
-            <h3 style={{fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em'}}>
-              Category Ratings
-            </h3>
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '8px'}}>
-              {Object.entries(review.categoryRatings).map(([category, rating]) => (
-                <div key={category} style={{backgroundColor: '#f9fafb', borderRadius: '10px', padding: '10px 14px'}}>
-                  <div style={{color: '#6b7280', fontSize: '0.75rem', textTransform: 'capitalize', marginBottom: '2px'}}>{category}</div>
-                  <div style={{color: '#111827', fontWeight: '700'}}>⭐ {parseFloat(rating).toFixed(1)}</div>
-                </div>
-              ))}
+            ← Back to {review.stadiumName}
+          </Link>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+            <div>
+              <h1 style={{color: 'white', fontSize: '2rem', fontWeight: '900', margin: '0 0 8px', letterSpacing: '-0.02em'}}>
+                {review.title}
+              </h1>
+              <p style={{color: '#94a3b8', margin: 0, fontSize: '0.9rem'}}>
+                by <span style={{color: '#60a5fa', fontWeight: '600'}}>{review.username}</span>
+                {review.visitDate && ` · Visited ${new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}`}
+              </p>
             </div>
-          </div>
-        )}
-
-        {/* Photos */}
-        {review.photoUrls && review.photoUrls.length > 0 && (
-          <div style={{marginBottom: '24px'}}>
-            <h3 style={{fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em'}}>
-              Photos
-            </h3>
-            <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-              {review.photoUrls.map((url, index) => (
-                <img
-                  key={index}
-                  src={`http://localhost:8080${url}`}
-                  alt={`Review photo ${index + 1}`}
-                  style={{width: '150px', height: '150px', objectFit: 'cover', borderRadius: '10px', border: '1px solid #e5e7eb'}}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Like Button */}
-        <div style={{display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
-          <button
-            onClick={handleLike}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '8px 16px',
+            <div style={{
+              backgroundColor: '#fef3c7',
+              color: '#d97706',
+              padding: '10px 20px',
               borderRadius: '999px',
-              border: `1px solid ${likes.isLiked ? '#2563eb' : '#e5e7eb'}`,
-              backgroundColor: likes.isLiked ? '#eff6ff' : 'white',
-              color: likes.isLiked ? '#2563eb' : '#6b7280',
-              cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '0.875rem',
-              transition: 'all 0.2s'
-            }}
-          >
-            👍 {likes.likeCount} {likes.likeCount === 1 ? 'Like' : 'Likes'}
-          </button>
-          <span style={{color: '#9ca3af', fontSize: '0.8rem'}}>
-            {review.createdAt && new Date(review.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'})}
-          </span>
+              fontWeight: '900',
+              fontSize: '1.25rem',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              marginLeft: '16px'
+            }}>
+              ⭐ {parseFloat(review.overallRating).toFixed(1)}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Comments */}
-      <div style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '24px'}}>
-        <h2 style={{fontSize: '1.125rem', fontWeight: '700', color: '#111827', marginBottom: '20px'}}>
-          Comments ({comments.length})
-        </h2>
+      <div style={{maxWidth: '800px', margin: '0 auto', padding: '32px 24px'}}>
 
-        {/* Add Comment */}
-        {user ? (
-          <form onSubmit={handleComment} style={{marginBottom: '24px'}}>
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Write a comment..."
-              rows={3}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '10px',
-                border: '1px solid #e5e7eb',
-                fontSize: '0.95rem',
-                outline: 'none',
-                resize: 'vertical',
-                marginBottom: '8px',
-                boxSizing: 'border-box'
-              }}
-            />
-            <button
-              type="submit"
-              disabled={submitting || !commentText.trim()}
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                padding: '8px 20px',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: '600',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
-              }}
-            >
-              {submitting ? 'Posting...' : 'Post Comment'}
-            </button>
-          </form>
-        ) : (
-          <div style={{marginBottom: '24px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '10px', textAlign: 'center'}}>
-            <Link to="/login" style={{color: '#2563eb', fontWeight: '600'}}>Login</Link>
-            <span style={{color: '#6b7280'}}> to leave a comment</span>
-          </div>
-        )}
+        {/* Review Content */}
+        <div style={{
+          backgroundColor: 'white', borderRadius: '20px',
+          border: '1px solid #f0f0f0', padding: '32px',
+          marginBottom: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+        }}>
+          <p style={{color: '#374151', lineHeight: '1.8', fontSize: '1rem', margin: '0 0 28px'}}>
+            {review.content}
+          </p>
 
-        {/* Comments List */}
-        {comments.length === 0 ? (
-          <p style={{color: '#9ca3af', textAlign: 'center', padding: '24px'}}>No comments yet. Be the first!</p>
-        ) : (
-          <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-            {comments.map(comment => (
-              <div key={comment.id} style={{padding: '16px', backgroundColor: '#f9fafb', borderRadius: '10px'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
-                  <span style={{fontWeight: '600', color: '#111827', fontSize: '0.875rem'}}>{comment.username}</span>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                    <span style={{color: '#9ca3af', fontSize: '0.8rem'}}>
-                      {comment.createdAt && new Date(comment.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}
-                    </span>
-                    {user && user.username === comment.username && (
-                      <button
-                        onClick={() => handleDeleteComment(comment.id)}
-                        style={{color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem'}}
-                      >
-                        Delete
-                      </button>
-                    )}
+          {/* Category Ratings */}
+          {review.categoryRatings && Object.keys(review.categoryRatings).length > 0 && (
+            <div style={{marginBottom: '28px'}}>
+              <h3 style={{fontSize: '0.8rem', fontWeight: '700', color: '#9ca3af', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.08em'}}>
+                Category Ratings
+              </h3>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '10px'}}>
+                {Object.entries(review.categoryRatings).map(([category, rating]) => (
+                  <div key={category} style={{
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '12px',
+                    padding: '12px 16px',
+                    border: '1px solid #f0f0f0'
+                  }}>
+                    <div style={{color: '#9ca3af', fontSize: '0.75rem', textTransform: 'capitalize', marginBottom: '4px', fontWeight: '500'}}>{category}</div>
+                    <div style={{color: '#1a1a2e', fontWeight: '800', fontSize: '1.1rem'}}>
+                      <span style={{color: '#f59e0b'}}>★</span> {parseFloat(rating).toFixed(1)}
+                    </div>
                   </div>
-                </div>
-                <p style={{color: '#374151', fontSize: '0.875rem', lineHeight: '1.6'}}>{comment.content}</p>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
+
+          {/* Photos */}
+          {review.photoUrls && review.photoUrls.length > 0 && (
+            <div style={{marginBottom: '28px'}}>
+              <h3 style={{fontSize: '0.8rem', fontWeight: '700', color: '#9ca3af', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.08em'}}>
+                Photos
+              </h3>
+              <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
+                {review.photoUrls.map((url, index) => (
+                  <img key={index} src={`http://localhost:8080${url}`}
+                    alt={`Review photo ${index + 1}`}
+                    style={{width: '160px', height: '160px', objectFit: 'cover', borderRadius: '12px', border: '1px solid #f0f0f0'}}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Like + Date */}
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '20px', borderTop: '1px solid #f3f4f6'}}>
+            <button onClick={handleLike} style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '10px 20px', borderRadius: '999px',
+              border: `2px solid ${likes.isLiked ? '#2563eb' : '#e5e7eb'}`,
+              backgroundColor: likes.isLiked ? '#eff6ff' : 'white',
+              color: likes.isLiked ? '#2563eb' : '#6b7280',
+              cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem',
+              transition: 'all 0.2s'
+            }}>
+              👍 {likes.likeCount} {likes.likeCount === 1 ? 'Like' : 'Likes'}
+            </button>
+            {review.createdAt && (
+              <span style={{color: '#9ca3af', fontSize: '0.85rem'}}>
+                {new Date(review.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'})}
+              </span>
+            )}
           </div>
-        )}
+        </div>
+
+        {/* Comments */}
+        <div style={{
+          backgroundColor: 'white', borderRadius: '20px',
+          border: '1px solid #f0f0f0', padding: '32px',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+        }}>
+          <h2 style={{fontSize: '1.1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 24px'}}>
+            Comments ({comments.length})
+          </h2>
+
+          {user ? (
+            <form onSubmit={handleComment} style={{marginBottom: '28px'}}>
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Share your thoughts..."
+                rows={3}
+                style={{
+                  width: '100%', padding: '14px 16px',
+                  borderRadius: '12px', border: '2px solid #f0f0f0',
+                  fontSize: '0.95rem', outline: 'none', resize: 'vertical',
+                  marginBottom: '10px', boxSizing: 'border-box',
+                  fontFamily: 'inherit', transition: 'border-color 0.2s'
+                }}
+                onFocus={e => e.target.style.borderColor = '#2563eb'}
+                onBlur={e => e.target.style.borderColor = '#f0f0f0'}
+              />
+              <button type="submit" disabled={submitting || !commentText.trim()} style={{
+                backgroundColor: submitting || !commentText.trim() ? '#93c5fd' : '#2563eb',
+                color: 'white', padding: '10px 24px', borderRadius: '10px',
+                border: 'none', fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+              }}>
+                {submitting ? 'Posting...' : 'Post Comment'}
+              </button>
+            </form>
+          ) : (
+            <div style={{
+              marginBottom: '28px', padding: '16px 20px',
+              backgroundColor: '#f8f9fa', borderRadius: '12px',
+              textAlign: 'center', border: '1px solid #f0f0f0'
+            }}>
+              <Link to="/login" style={{color: '#2563eb', fontWeight: '700'}}>Login</Link>
+              <span style={{color: '#6b7280'}}> to leave a comment</span>
+            </div>
+          )}
+
+          {comments.length === 0 ? (
+            <p style={{color: '#9ca3af', textAlign: 'center', padding: '32px', margin: 0}}>
+              No comments yet. Be the first!
+            </p>
+          ) : (
+            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+              {comments.map(comment => (
+                <div key={comment.id} style={{
+                  padding: '16px 20px', backgroundColor: '#f8f9fa',
+                  borderRadius: '12px', border: '1px solid #f0f0f0'
+                }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                      <div style={{
+                        width: '28px', height: '28px', borderRadius: '50%',
+                        backgroundColor: '#2563eb', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: '700'
+                      }}>
+                        {comment.username.charAt(0).toUpperCase()}
+                      </div>
+                      <span style={{fontWeight: '700', color: '#1a1a2e', fontSize: '0.875rem'}}>{comment.username}</span>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                      <span style={{color: '#9ca3af', fontSize: '0.8rem'}}>
+                        {comment.createdAt && new Date(comment.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}
+                      </span>
+                      {user && user.username === comment.username && (
+                        <button onClick={() => handleDeleteComment(comment.id)} style={{
+                          color: '#ef4444', background: 'none', border: 'none',
+                          cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600'
+                        }}>
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <p style={{color: '#374151', fontSize: '0.9rem', lineHeight: '1.6', margin: 0}}>{comment.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

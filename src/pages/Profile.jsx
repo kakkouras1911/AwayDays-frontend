@@ -32,109 +32,145 @@ export default function Profile() {
   if (!user) return null
 
   return (
-    <div style={{maxWidth: '900px', margin: '0 auto', padding: '32px 16px'}}>
+    <div style={{backgroundColor: '#f8f9fa', minHeight: '100vh'}}>
 
-      {/* Profile Header */}
-      <div style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '32px', marginBottom: '32px'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+      {/* Header */}
+      <div style={{
+        background: '#0f3460',
+        backgroundImage: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)',
+        padding: '48px 24px'
+      }}>
+        <div style={{maxWidth: '900px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
             <div style={{
-              width: '80px', height: '80px', borderRadius: '50%',
-              backgroundColor: '#2563eb', display: 'flex', alignItems: 'center',
-              justifyContent: 'center', fontSize: '2rem', color: 'white', fontWeight: '700'
+              width: '72px', height: '72px', borderRadius: '50%',
+              background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontSize: '1.75rem', fontWeight: '900',
+              boxShadow: '0 4px 15px rgba(37,99,235,0.4)',
+              border: '3px solid rgba(255,255,255,0.2)'
             }}>
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 style={{fontSize: '1.5rem', fontWeight: '800', color: '#111827', marginBottom: '4px'}}>
+              <h1 style={{color: 'white', fontSize: '1.75rem', fontWeight: '900', margin: '0 0 4px'}}>
                 {user.username}
               </h1>
-              <p style={{color: '#6b7280', fontSize: '0.875rem'}}>{user.email}</p>
-              <p style={{color: '#6b7280', fontSize: '0.875rem', marginTop: '4px'}}>
+              <p style={{color: '#94a3b8', margin: '0 0 4px', fontSize: '0.875rem'}}>{user.email}</p>
+              <p style={{color: '#60a5fa', margin: 0, fontSize: '0.875rem', fontWeight: '600'}}>
                 {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'} written
               </p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            style={{padding: '10px 20px', borderRadius: '10px', border: '1px solid #e5e7eb', backgroundColor: 'white', color: '#6b7280', cursor: 'pointer', fontWeight: '500', fontSize: '0.875rem'}}
-          >
+          <button onClick={handleLogout} style={{
+            padding: '10px 20px', borderRadius: '10px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            color: 'white', cursor: 'pointer',
+            fontWeight: '600', fontSize: '0.875rem',
+            backdropFilter: 'blur(10px)'
+          }}>
             Logout
           </button>
         </div>
       </div>
 
-      {/* Reviews */}
-      <h2 style={{fontSize: '1.25rem', fontWeight: '700', color: '#111827', marginBottom: '16px'}}>
-        My Reviews
-      </h2>
+      {/* Content */}
+      <div style={{maxWidth: '900px', margin: '0 auto', padding: '40px 24px'}}>
+        <h2 style={{fontSize: '1.25rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '20px'}}>
+          My Reviews
+        </h2>
 
-      {loading ? (
-        <div style={{textAlign: 'center', padding: '48px', color: '#6b7280'}}>Loading...</div>
-      ) : reviews.length === 0 ? (
-        <div style={{textAlign: 'center', padding: '48px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', color: '#6b7280'}}>
-          <p style={{marginBottom: '16px'}}>You haven't written any reviews yet.</p>
-          <Link to="/stadiums" style={{backgroundColor: '#2563eb', color: 'white', padding: '10px 20px', borderRadius: '10px', textDecoration: 'none', fontWeight: '600', fontSize: '0.875rem'}}>
-            Browse Stadiums
-          </Link>
-        </div>
-      ) : (
-        <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-          {reviews.map(review => (
-            <div key={review.id} style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', padding: '20px', transition: 'all 0.2s'}}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
-            >
-              <Link to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px'}}>
-                  <div>
-                    <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#111827', marginBottom: '2px'}}>{review.title}</h3>
-                    <p style={{color: '#2563eb', fontSize: '0.875rem', fontWeight: '500'}}>{review.stadiumName}</p>
+        {loading ? (
+          <div style={{textAlign: 'center', padding: '60px', color: '#6b7280'}}>Loading...</div>
+        ) : reviews.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '60px',
+            backgroundColor: 'white', borderRadius: '20px',
+            border: '1px solid #f0f0f0', color: '#6b7280',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+          }}>
+            <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
+            <p style={{fontWeight: '600', marginBottom: '8px', color: '#374151'}}>No reviews yet</p>
+            <p style={{fontSize: '0.875rem', marginBottom: '20px'}}>Start sharing your stadium experiences!</p>
+            <Link to="/stadiums" style={{
+              backgroundColor: '#2563eb', color: 'white',
+              padding: '10px 24px', borderRadius: '10px',
+              textDecoration: 'none', fontWeight: '700', fontSize: '0.875rem'
+            }}>
+              Browse Stadiums
+            </Link>
+          </div>
+        ) : (
+          <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+            {reviews.map(review => (
+              <div key={review.id} style={{
+                backgroundColor: 'white', borderRadius: '16px',
+                border: '1px solid #f0f0f0', padding: '24px',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                transition: 'all 0.2s'
+              }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'}
+              >
+                <Link to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px'}}>
+                    <div>
+                      <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>{review.title}</h3>
+                      <p style={{color: '#2563eb', fontSize: '0.85rem', fontWeight: '600', margin: 0}}>{review.stadiumName}</p>
+                    </div>
+                    <div style={{
+                      backgroundColor: '#fef3c7', color: '#d97706',
+                      padding: '4px 14px', borderRadius: '999px',
+                      fontWeight: '800', fontSize: '0.875rem', whiteSpace: 'nowrap'
+                    }}>
+                      ⭐ {parseFloat(review.overallRating).toFixed(1)}
+                    </div>
                   </div>
-                  <div style={{backgroundColor: '#eff6ff', color: '#2563eb', padding: '4px 12px', borderRadius: '999px', fontWeight: '700', fontSize: '0.875rem'}}>
-                    ⭐ {parseFloat(review.overallRating).toFixed(1)}
+                  <p style={{color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.6', margin: '0 0 10px'}}>
+                    {review.content.length > 120 ? review.content.substring(0, 120) + '...' : review.content}
+                  </p>
+                  <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#9ca3af'}}>
+                    {review.visitDate && (
+                      <span>📅 {new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}</span>
+                    )}
+                    <span>👍 {review.likeCount} likes</span>
                   </div>
-                </div>
-                <p style={{color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.6', marginBottom: '8px'}}>
-                  {review.content.length > 120 ? review.content.substring(0, 120) + '...' : review.content}
-                </p>
-                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#9ca3af'}}>
-                  {review.visitDate && (
-                    <span>Visited: {new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}</span>
-                  )}
-                  <span>{review.likeCount} {review.likeCount === 1 ? 'like' : 'likes'}</span>
-                </div>
-              </Link>
-
-              {/* Edit/Delete buttons */}
-              <div style={{display: 'flex', gap: '8px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #f3f4f6'}}>
-                <Link
-                  to={`/reviews/${review.id}/edit`}
-                  style={{padding: '6px 14px', borderRadius: '8px', border: '1px solid #e5e7eb', backgroundColor: 'white', color: '#374151', textDecoration: 'none', fontSize: '0.8rem', fontWeight: '500'}}
-                >
-                  Edit
                 </Link>
-                <button
-                  onClick={async (e) => {
+
+                {/* Edit/Delete */}
+                <div style={{display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
+                  <Link to={`/reviews/${review.id}/edit`} style={{
+                    padding: '6px 16px', borderRadius: '8px',
+                    border: '1px solid #e5e7eb', backgroundColor: 'white',
+                    color: '#374151', textDecoration: 'none',
+                    fontSize: '0.8rem', fontWeight: '600'
+                  }}>
+                    ✏️ Edit
+                  </Link>
+                  <button onClick={async (e) => {
                     e.preventDefault()
-                    if (window.confirm('Are you sure you want to delete this review?')) {
+                    if (window.confirm('Delete this review?')) {
                       try {
                         await deleteReview(review.id)
                         setReviews(reviews.filter(r => r.id !== review.id))
                       } catch (err) {
-                        console.error('Failed to delete review', err)
+                        console.error('Failed to delete', err)
                       }
                     }
-                  }}
-                  style={{padding: '6px 14px', borderRadius: '8px', border: '1px solid #fecaca', backgroundColor: 'white', color: '#dc2626', fontSize: '0.8rem', fontWeight: '500', cursor: 'pointer'}}
-                >
-                  Delete
-                </button>
+                  }} style={{
+                    padding: '6px 16px', borderRadius: '8px',
+                    border: '1px solid #fecaca', backgroundColor: '#fef2f2',
+                    color: '#dc2626', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer'
+                  }}>
+                    🗑️ Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

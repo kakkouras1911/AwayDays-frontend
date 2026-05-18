@@ -30,63 +30,87 @@ export default function StadiumDetail() {
   }, [id])
 
   if (loading) return (
-    <div style={{textAlign: 'center', padding: '64px', color: '#6b7280'}}>Loading...</div>
+    <div style={{textAlign: 'center', padding: '80px', color: '#6b7280'}}>
+      <div style={{fontSize: '2rem', marginBottom: '12px'}}>🏟️</div>
+      Loading...
+    </div>
   )
 
   if (!stadium) return (
-    <div style={{textAlign: 'center', padding: '64px', color: '#6b7280'}}>Stadium not found.</div>
+    <div style={{textAlign: 'center', padding: '80px', color: '#6b7280'}}>Stadium not found.</div>
   )
 
   return (
-    <div>
-      {/* Stadium Header */}
-      <div style={{background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)', padding: '48px 16px'}}>
-        <div style={{maxWidth: '1200px', margin: '0 auto'}}>
-          <Link to="/stadiums" style={{color: '#bfdbfe', textDecoration: 'none', fontSize: '0.875rem'}}>
+    <div style={{backgroundColor: '#f8f9fa', minHeight: '100vh'}}>
+
+      {/* Hero Header */}
+      <div style={{
+        background: '#0f3460',
+        backgroundImage: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)',
+        padding: '60px 24px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute', inset: 0, opacity: 0.05,
+          backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px)',
+          backgroundSize: '50px 50px'
+        }} />
+
+        <div style={{maxWidth: '1200px', margin: '0 auto', position: 'relative'}}>
+          <Link to="/stadiums" style={{
+            color: '#94a3b8',
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            marginBottom: '24px'
+          }}>
             ← Back to Stadiums
           </Link>
-          <h1 style={{color: 'white', fontSize: '2.5rem', fontWeight: '800', margin: '16px 0 8px'}}>
+
+          <h1 style={{color: 'white', fontSize: '2.75rem', fontWeight: '900', margin: '0 0 8px', letterSpacing: '-0.02em'}}>
             {stadium.name}
           </h1>
-          <p style={{color: '#bfdbfe', fontSize: '1.125rem'}}>
-            {stadium.city}, {stadium.country}
+          <p style={{color: '#94a3b8', fontSize: '1.1rem', margin: '0 0 32px'}}>
+            📍 {stadium.city}, {stadium.country}
           </p>
 
-          {/* Stadium Stats */}
-          <div style={{display: 'flex', gap: '32px', marginTop: '24px', flexWrap: 'wrap'}}>
-            {stadium.capacity && (
-              <div style={{color: 'white'}}>
-                <div style={{fontSize: '1.5rem', fontWeight: '700'}}>{stadium.capacity.toLocaleString()}</div>
-                <div style={{color: '#bfdbfe', fontSize: '0.875rem'}}>Capacity</div>
+          {/* Stats Row */}
+        
+          <div style={{display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '32px'}}>
+            {[
+              stadium.capacity && { icon: '🪑', value: stadium.capacity.toLocaleString(), label: 'Capacity' },
+              stadium.averageRating && { icon: '⭐', value: parseFloat(stadium.averageRating).toFixed(1), label: 'Avg Rating' },
+              { icon: '📝', value: reviews.length, label: 'Reviews' },
+              stadium.homeTeam && { icon: '⚽', value: stadium.homeTeam, label: 'Home Team' },
+            ].filter(Boolean).map((stat, i) => (
+              <div key={i} style={{
+                backgroundColor: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '12px',
+                padding: '16px 24px',
+                textAlign: 'center',
+                minWidth: '100px'
+              }}>
+                <div style={{fontSize: '1.25rem', marginBottom: '6px'}}>{stat.icon}</div>
+                <div style={{color: 'white', fontWeight: '800', fontSize: '1.25rem', lineHeight: '1'}}>{stat.value}</div>
+                <div style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem', marginTop: '4px'}}>{stat.label}</div>
               </div>
-            )}
-            {stadium.averageRating && (
-              <div style={{color: 'white'}}>
-                <div style={{fontSize: '1.5rem', fontWeight: '700'}}>⭐ {parseFloat(stadium.averageRating).toFixed(1)}</div>
-                <div style={{color: '#bfdbfe', fontSize: '0.875rem'}}>Average Rating</div>
-              </div>
-            )}
-            <div style={{color: 'white'}}>
-              <div style={{fontSize: '1.5rem', fontWeight: '700'}}>{reviews.length}</div>
-              <div style={{color: '#bfdbfe', fontSize: '0.875rem'}}>Reviews</div>
-            </div>
-            {stadium.homeTeam && (
-              <div style={{color: 'white'}}>
-                <div style={{fontSize: '1.5rem', fontWeight: '700'}}>{stadium.homeTeam}</div>
-                <div style={{color: '#bfdbfe', fontSize: '0.875rem'}}>Home Team</div>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
 
-      <div style={{maxWidth: '1200px', margin: '0 auto', padding: '48px 16px'}}>
-        <div style={{display: 'grid', gridTemplateColumns: '1fr 320px', gap: '32px'}}>
-          
-          {/* Reviews Section */}
+      {/* Content */}
+      <div style={{maxWidth: '1200px', margin: '0 auto', padding: '40px 24px'}}>
+        <div style={{display: 'grid', gridTemplateColumns: '1fr 300px', gap: '32px'}}>
+
+          {/* Reviews */}
           <div>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
-              <h2 style={{fontSize: '1.5rem', fontWeight: '700', color: '#111827'}}>
+              <h2 style={{fontSize: '1.5rem', fontWeight: '800', color: '#1a1a2e', margin: 0}}>
                 Reviews ({reviews.length})
               </h2>
               <button
@@ -94,33 +118,76 @@ export default function StadiumDetail() {
                 style={{
                   backgroundColor: '#2563eb',
                   color: 'white',
-                  padding: '10px 20px',
+                  padding: '10px 24px',
                   borderRadius: '10px',
                   border: 'none',
-                  fontWeight: '600',
+                  fontWeight: '700',
                   cursor: 'pointer',
-                  fontSize: '0.95rem'
+                  fontSize: '0.9rem',
+                  boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                  transition: 'all 0.2s'
                 }}
               >
-                {user ? 'Write a Review' : 'Login to Review'}
+                {user ? '✏️ Write a Review' : '🔒 Login to Review'}
               </button>
             </div>
 
             {reviews.length === 0 ? (
               <div style={{
-                textAlign: 'center',
-                padding: '48px',
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                border: '1px solid #e5e7eb',
-                color: '#6b7280'
+                textAlign: 'center', padding: '60px',
+                backgroundColor: 'white', borderRadius: '16px',
+                border: '1px solid #f0f0f0', color: '#6b7280'
               }}>
-                No reviews yet. Be the first to review {stadium.name}!
+                <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
+                <p style={{fontWeight: '600', marginBottom: '4px'}}>No reviews yet</p>
+                <p style={{fontSize: '0.875rem'}}>Be the first to review {stadium.name}!</p>
               </div>
             ) : (
               <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
                 {reviews.map(review => (
-                  <ReviewCard key={review.id} review={review} />
+                  <Link key={review.id} to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
+                    <div style={{
+                      backgroundColor: 'white',
+                      borderRadius: '16px',
+                      border: '1px solid #f0f0f0',
+                      padding: '24px',
+                      transition: 'all 0.2s',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'translateY(0)' }}
+                    >
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
+                        <div>
+                          <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>
+                            {review.title}
+                          </h3>
+                          <p style={{color: '#6b7280', fontSize: '0.85rem', margin: 0}}>
+                            by <span style={{color: '#2563eb', fontWeight: '600'}}>{review.username}</span>
+                            {review.visitDate && ` · ${new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}`}
+                          </p>
+                        </div>
+                        <div style={{
+                          backgroundColor: '#fef3c7',
+                          color: '#d97706',
+                          padding: '6px 14px',
+                          borderRadius: '999px',
+                          fontWeight: '800',
+                          fontSize: '0.9rem',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          ⭐ {parseFloat(review.overallRating).toFixed(1)}
+                        </div>
+                      </div>
+                      <p style={{color: '#4b5563', fontSize: '0.9rem', lineHeight: '1.7', margin: '0 0 12px'}}>
+                        {review.content.length > 180 ? review.content.substring(0, 180) + '...' : review.content}
+                      </p>
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#9ca3af', borderTop: '1px solid #f9fafb', paddingTop: '12px'}}>
+                        <span>👍 {review.likeCount} likes</span>
+                        <span style={{color: '#2563eb', fontWeight: '600'}}>Read more →</span>
+                      </div>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -131,91 +198,39 @@ export default function StadiumDetail() {
             <div style={{
               backgroundColor: 'white',
               borderRadius: '16px',
-              border: '1px solid #e5e7eb',
+              border: '1px solid #f0f0f0',
               padding: '24px',
               position: 'sticky',
-              top: '84px'
+              top: '84px',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
             }}>
-              <h3 style={{fontSize: '1.125rem', fontWeight: '700', color: '#111827', marginBottom: '16px'}}>
+              <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '20px', margin: '0 0 20px'}}>
                 Stadium Info
               </h3>
-              <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
-                {stadium.capacity && (
-                  <InfoRow label="Capacity" value={stadium.capacity.toLocaleString()} />
-                )}
-                {stadium.builtYear && (
-                  <InfoRow label="Built" value={stadium.builtYear} />
-                )}
-                {stadium.homeTeam && (
-                  <InfoRow label="Home Team" value={stadium.homeTeam} />
-                )}
-                {stadium.address && (
-                  <InfoRow label="Address" value={stadium.address} />
-                )}
-                {stadium.description && (
-                  <p style={{color: '#6b7280', fontSize: '0.875rem', marginTop: '8px'}}>
-                    {stadium.description}
-                  </p>
-                )}
+              <div style={{display: 'flex', flexDirection: 'column', gap: '14px'}}>
+                {[
+                  stadium.capacity && { label: 'Capacity', value: stadium.capacity.toLocaleString() + ' seats' },
+                  stadium.builtYear && { label: 'Built', value: stadium.builtYear },
+                  stadium.homeTeam && { label: 'Home Team', value: stadium.homeTeam },
+                  stadium.address && { label: 'Address', value: stadium.address },
+                  stadium.country && { label: 'Country', value: stadium.country },
+                ].filter(Boolean).map((row, i) => (
+                  <div key={i} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px'}}>
+                    <span style={{color: '#9ca3af', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>{row.label}</span>
+                    <span style={{color: '#1a1a2e', fontSize: '0.85rem', fontWeight: '600', textAlign: 'right'}}>{row.value}</span>
+                  </div>
+                ))}
               </div>
+
+              {stadium.description && (
+                <div style={{marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #f0f0f0'}}>
+                  <p style={{color: '#6b7280', fontSize: '0.85rem', lineHeight: '1.6', margin: 0}}>{stadium.description}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
-
-function InfoRow({ label, value }) {
-  return (
-    <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem'}}>
-      <span style={{color: '#6b7280'}}>{label}</span>
-      <span style={{color: '#111827', fontWeight: '500'}}>{value}</span>
-    </div>
-  )
-}
-
-function ReviewCard({ review }) {
-  return (
-    <Link to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '16px',
-        border: '1px solid #e5e7eb',
-        padding: '20px',
-        transition: 'all 0.2s',
-        cursor: 'pointer'
-      }}
-        onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'}
-        onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
-      >
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
-          <div>
-            <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>
-              {review.title}
-            </h3>
-            <p style={{color: '#6b7280', fontSize: '0.875rem'}}>by {review.username}</p>
-          </div>
-          <div style={{
-            backgroundColor: '#eff6ff',
-            color: '#2563eb',
-            padding: '4px 12px',
-            borderRadius: '999px',
-            fontWeight: '700',
-            fontSize: '0.875rem'
-          }}>
-            ⭐ {parseFloat(review.overallRating).toFixed(1)}
-          </div>
-        </div>
-        <p style={{color: '#374151', fontSize: '0.875rem', lineHeight: '1.6', marginBottom: '12px'}}>
-          {review.content.length > 150 ? review.content.substring(0, 150) + '...' : review.content}
-        </p>
-        {review.visitDate && (
-          <p style={{color: '#9ca3af', fontSize: '0.8rem'}}>
-            Visited: {new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}
-          </p>
-        )}
-      </div>
-    </Link>
   )
 }
