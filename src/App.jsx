@@ -10,6 +10,7 @@ import WriteReview from './pages/WriteReview'
 import Profile from './pages/Profile'
 import EditReview from './pages/EditReview'
 import Leaderboard from './pages/Leaderboard'
+import ChatWidget from './components/ChatWidget'
 
 function App() {
   return (
@@ -26,7 +27,10 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/reviews/:id/edit" element={<EditReview />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+
+        
       </Routes>
+      <ChatWidget />
     </div>
   )
 }
