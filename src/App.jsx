@@ -12,6 +12,7 @@ import EditReview from './pages/EditReview'
 import Leaderboard from './pages/Leaderboard'
 import ChatWidget from './components/ChatWidget'
 
+
 function App() {
   return (
     <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
@@ -27,7 +28,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/reviews/:id/edit" element={<EditReview />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-
+        
         
       </Routes>
       <ChatWidget />

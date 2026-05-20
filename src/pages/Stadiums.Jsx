@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getStadiums } from '../services/api'
+import StadiumImage from '../components/StadiumImages'
 
 export default function Stadiums() {
   const [stadiums, setStadiums] = useState([])
@@ -190,26 +191,25 @@ export default function Stadiums() {
                     onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)'; e.currentTarget.style.transform = 'translateY(-4px)' }}
                     onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)' }}
                   >
+                    <div style={{position: 'relative'}}>
+<StadiumImage 
+  stadiumId={stadium.id}
+  stadiumName={stadium.name}
+  coverImageUrl={stadium.coverImageUrl}
+  height="140px" 
+/>                  {stadium.capacity && (
                     <div style={{
-                      height: '140px',
-                      background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '2.5rem', position: 'relative'
+                      position: 'absolute', bottom: '10px', right: '10px',
+                      backgroundColor: 'rgba(0,0,0,0.5)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '999px', padding: '3px 10px',
+                      color: 'white', fontSize: '0.75rem', fontWeight: '600',
+                      border: '1px solid rgba(255,255,255,0.2)'
                     }}>
-                      🏟️
-                      {stadium.capacity && (
-                        <div style={{
-                          position: 'absolute', bottom: '10px', right: '10px',
-                          backgroundColor: 'rgba(255,255,255,0.15)',
-                          backdropFilter: 'blur(10px)',
-                          borderRadius: '999px', padding: '3px 10px',
-                          color: 'white', fontSize: '0.75rem', fontWeight: '600',
-                          border: '1px solid rgba(255,255,255,0.2)'
-                        }}>
-                          {stadium.capacity.toLocaleString()} 🪑
-                        </div>
-                      )}
+                      {stadium.capacity.toLocaleString()} 🪑
                     </div>
+                  )}
+                </div>
                     <div style={{padding: '16px'}}>
                       <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>{stadium.name}</h3>
                       <p style={{color: '#6b7280', fontSize: '0.85rem', margin: '0 0 12px'}}>📍 {stadium.city}, {stadium.country}</p>

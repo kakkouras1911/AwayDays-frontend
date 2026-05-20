@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getStadiumById, getReviewsByStadium } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import StadiumImage from '../components/StadiumImages'
 
 export default function StadiumDetail() {
   const { id } = useParams()
@@ -59,13 +60,8 @@ export default function StadiumDetail() {
 
         <div style={{maxWidth: '1200px', margin: '0 auto', position: 'relative'}}>
           <Link to="/stadiums" style={{
-            color: '#94a3b8',
-            textDecoration: 'none',
-            fontSize: '0.875rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px',
-            marginBottom: '24px'
+            color: '#94a3b8', textDecoration: 'none', fontSize: '0.875rem',
+            display: 'inline-flex', alignItems: 'center', gap: '4px', marginBottom: '24px'
           }}>
             ← Back to Stadiums
           </Link>
@@ -77,8 +73,6 @@ export default function StadiumDetail() {
             📍 {stadium.city}, {stadium.country}
           </p>
 
-          {/* Stats Row */}
-        
           <div style={{display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '32px'}}>
             {[
               stadium.capacity && { icon: '🪑', value: stadium.capacity.toLocaleString(), label: 'Capacity' },
@@ -89,10 +83,8 @@ export default function StadiumDetail() {
               <div key={i} style={{
                 backgroundColor: 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: '12px',
-                padding: '16px 24px',
-                textAlign: 'center',
-                minWidth: '100px'
+                borderRadius: '12px', padding: '16px 24px',
+                textAlign: 'center', minWidth: '100px'
               }}>
                 <div style={{fontSize: '1.25rem', marginBottom: '6px'}}>{stat.icon}</div>
                 <div style={{color: 'white', fontWeight: '800', fontSize: '1.25rem', lineHeight: '1'}}>{stat.value}</div>
@@ -102,6 +94,14 @@ export default function StadiumDetail() {
           </div>
         </div>
       </div>
+
+      {/* Stadium Image */}
+      <StadiumImage
+  stadiumId={stadium.id}
+  stadiumName={stadium.name}
+  coverImageUrl={stadium.coverImageUrl}
+  height="350px"
+      />
 
       {/* Content */}
       <div style={{maxWidth: '1200px', margin: '0 auto', padding: '40px 24px'}}>
@@ -116,16 +116,10 @@ export default function StadiumDetail() {
               <button
                 onClick={() => user ? navigate(`/stadiums/${id}/review`) : navigate('/login')}
                 style={{
-                  backgroundColor: '#2563eb',
-                  color: 'white',
-                  padding: '10px 24px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
-                  transition: 'all 0.2s'
+                  backgroundColor: '#2563eb', color: 'white',
+                  padding: '10px 24px', borderRadius: '10px', border: 'none',
+                  fontWeight: '700', cursor: 'pointer', fontSize: '0.9rem',
+                  boxShadow: '0 4px 12px rgba(37,99,235,0.3)', transition: 'all 0.2s'
                 }}
               >
                 {user ? '✏️ Write a Review' : '🔒 Login to Review'}
@@ -134,9 +128,8 @@ export default function StadiumDetail() {
 
             {reviews.length === 0 ? (
               <div style={{
-                textAlign: 'center', padding: '60px',
-                backgroundColor: 'white', borderRadius: '16px',
-                border: '1px solid #f0f0f0', color: '#6b7280'
+                textAlign: 'center', padding: '60px', backgroundColor: 'white',
+                borderRadius: '16px', border: '1px solid #f0f0f0', color: '#6b7280'
               }}>
                 <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
                 <p style={{fontWeight: '600', marginBottom: '4px'}}>No reviews yet</p>
@@ -147,12 +140,9 @@ export default function StadiumDetail() {
                 {reviews.map(review => (
                   <Link key={review.id} to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
                     <div style={{
-                      backgroundColor: 'white',
-                      borderRadius: '16px',
-                      border: '1px solid #f0f0f0',
-                      padding: '24px',
-                      transition: 'all 0.2s',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+                      backgroundColor: 'white', borderRadius: '16px',
+                      border: '1px solid #f0f0f0', padding: '24px',
+                      transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
                     }}
                       onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
                       onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'translateY(0)' }}
@@ -168,13 +158,9 @@ export default function StadiumDetail() {
                           </p>
                         </div>
                         <div style={{
-                          backgroundColor: '#fef3c7',
-                          color: '#d97706',
-                          padding: '6px 14px',
-                          borderRadius: '999px',
-                          fontWeight: '800',
-                          fontSize: '0.9rem',
-                          whiteSpace: 'nowrap'
+                          backgroundColor: '#fef3c7', color: '#d97706',
+                          padding: '6px 14px', borderRadius: '999px',
+                          fontWeight: '800', fontSize: '0.9rem', whiteSpace: 'nowrap'
                         }}>
                           ⭐ {parseFloat(review.overallRating).toFixed(1)}
                         </div>
@@ -196,15 +182,12 @@ export default function StadiumDetail() {
           {/* Sidebar */}
           <div>
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              border: '1px solid #f0f0f0',
-              padding: '24px',
-              position: 'sticky',
-              top: '84px',
+              backgroundColor: 'white', borderRadius: '16px',
+              border: '1px solid #f0f0f0', padding: '24px',
+              position: 'sticky', top: '84px',
               boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
             }}>
-              <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '20px', margin: '0 0 20px'}}>
+              <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 20px'}}>
                 Stadium Info
               </h3>
               <div style={{display: 'flex', flexDirection: 'column', gap: '14px'}}>
@@ -221,7 +204,6 @@ export default function StadiumDetail() {
                   </div>
                 ))}
               </div>
-
               {stadium.description && (
                 <div style={{marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #f0f0f0'}}>
                   <p style={{color: '#6b7280', fontSize: '0.85rem', lineHeight: '1.6', margin: 0}}>{stadium.description}</p>

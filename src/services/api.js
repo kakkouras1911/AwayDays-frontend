@@ -42,3 +42,14 @@ export const getLikes = (reviewId) => API.get(`/likes/review/${reviewId}`)
 
 export const updateReview = (id, data) => API.put(`/reviews/${id}`, data)
 export const getRecentReviews = () => API.get('/reviews/recent')
+
+export const updateStadiumCoverImage = (id, imageUrl) => 
+  API.patch(`/stadiums/${id}/cover-image`, { coverImageUrl: imageUrl })
+
+export const getUserProfile = (id) => API.get(`/users/${id}`)
+export const updateBio = (id, bio) => API.patch(`/users/${id}/bio`, { bio })
+export const uploadAvatar = (id, file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return API.post(`/users/${id}/avatar`, formData)
+}
