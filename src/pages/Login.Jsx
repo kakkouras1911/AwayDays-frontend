@@ -21,8 +21,8 @@ export default function Login() {
     setLoading(true)
     try {
       const response = await login(formData)
-      const { token, userId, username, email } = response.data
-      loginUser({ userId, username, email }, token)
+      const { token, userId, username, email, role } = response.data
+      loginUser({ userId, username, email, role }, token)
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Please try again.')

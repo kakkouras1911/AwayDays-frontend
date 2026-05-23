@@ -32,29 +32,32 @@ export default function Navbar() {
         </Link>
 
         {/* Center Links */}
-        <div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
-          {[
-            { path: '/stadiums', label: 'Stadiums' },
-            { path: '/leaderboard', label: 'Leaderboard' },
-          ].map(link => (
-            <Link
-              key={link.path}
-              to={link.path}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                fontWeight: isActive(link.path) ? '700' : '500',
-                color: isActive(link.path) ? '#2563eb' : '#4b5563',
-                backgroundColor: isActive(link.path) ? '#eff6ff' : 'transparent',
-                transition: 'all 0.15s'
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+  
+    <div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+      {[
+        { path: '/stadiums', label: 'Stadiums' },
+        { path: '/leaderboard', label: 'Leaderboard' },
+        { path: '/articles', label: '✍️ Articles' },
+        ...(user?.role === 'ADMIN' ? [{ path: '/admin', label: '⚙️ Admin' }] : [])
+      ].map(link => (
+        <Link
+          key={link.path}
+          to={link.path}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            fontSize: '0.9rem',
+            fontWeight: isActive(link.path) ? '700' : '500',
+            color: isActive(link.path) ? '#2563eb' : '#4b5563',
+            backgroundColor: isActive(link.path) ? '#eff6ff' : 'transparent',
+            transition: 'all 0.15s'
+          }}
+        >
+          {link.label}
+        </Link>
+      ))}
+    </div>
 
         {/* Auth */}
         <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>

@@ -21,8 +21,8 @@ export default function Signup() {
     setLoading(true)
     try {
       const response = await signup(formData)
-      const { token, userId, username, email } = response.data
-      loginUser({ userId, username, email }, token)
+      const { token, userId, username, email, role } = response.data
+      loginUser({ userId, username, email, role }, token)
       navigate('/')
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Signup failed. Please try again.'

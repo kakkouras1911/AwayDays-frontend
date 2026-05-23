@@ -11,6 +11,10 @@ import Profile from './pages/Profile'
 import EditReview from './pages/EditReview'
 import Leaderboard from './pages/Leaderboard'
 import ChatWidget from './components/ChatWidget'
+import AdminPanel from './pages/AdminPanel'
+import Articles from './pages/Articles'
+import ArticleDetail from './pages/ArticleDetail'
+import WriteArticle from './pages/WriteArticle'
 
 
 function App() {
@@ -28,6 +32,10 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/reviews/:id/edit" element={<EditReview />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:id" element={<ArticleDetail />} />
+        <Route path="/articles/new" element={<WriteArticle />} />
         
         
       </Routes>

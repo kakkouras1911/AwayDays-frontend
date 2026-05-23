@@ -53,3 +53,19 @@ export const uploadAvatar = (id, file) => {
   formData.append('file', file)
   return API.post(`/users/${id}/avatar`, formData)
 }
+
+// Author Applications
+export const applyForAuthor = (formData) => API.post('/author-applications/apply', formData)
+export const getUserApplications = (userId) => API.get(`/author-applications/user/${userId}`)
+export const getPendingApplications = () => API.get('/author-applications/pending')
+export const getAllApplications = () => API.get('/author-applications/all')
+export const approveApplication = (id) => API.patch(`/author-applications/${id}/approve`)
+export const rejectApplication = (id, adminNote) => API.patch(`/author-applications/${id}/reject`, { adminNote })
+
+// Articles
+export const getArticles = () => API.get('/articles')
+export const getArticleById = (id) => API.get(`/articles/${id}`)
+export const getArticlesByAuthor = (authorId) => API.get(`/articles/author/${authorId}`)
+export const createArticle = (formData) => API.post('/articles', formData)
+export const publishArticle = (id) => API.patch(`/articles/${id}/publish`)
+export const deleteArticle = (id) => API.delete(`/articles/${id}`)

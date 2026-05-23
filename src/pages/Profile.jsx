@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getReviewsByUser, deleteReview, getUserProfile, updateBio, uploadAvatar } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { getUserApplications, applyForAuthor } from '../services/api'
 
 export default function Profile() {
   const { user, logoutUser } = useAuth()
@@ -197,6 +198,7 @@ export default function Profile() {
 
       {/* Reviews */}
       <div style={{maxWidth: '900px', margin: '0 auto', padding: '40px 24px'}}>
+        <ApplyForAuthorSection userId={user.userId} />
         <h2 style={{fontSize: '1.25rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '20px'}}>
           My Reviews
         </h2>
@@ -283,6 +285,149 @@ export default function Profile() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function ApplyForAuthorSection({ userId }) {
+  const [application, setApplication] = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [message, setMessage] = useState('')
+  const [pdf, setPdf] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      try {
+        const res = await getUserApplications(userId)
+        if (res.data.length > 0) setApplication(res.data[res.data.length - 1])
+      } catch (err) {}
+    }
+    fetchApplication()
+  }, [userId])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!pdf) { setError('Please upload a PDF'); return }
+    setSubmitting(true)
+    setError('')
+    try {
+      const formData = new FormData()
+      formData.append('userId', userId)
+      formData.append('message', message)
+      formData.append('pdf', pdf)
+      const res = await applyForAuthor(formData)
+      setApplication(res.data)
+      setShowForm(false)
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to submit application')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (application) {
+    return (
+      <div style={{
+        backgroundColor: 'white', borderRadius: '16px',
+        border: '1px solid #f0f0f0', padding: '24px',
+        marginBottom: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+      }}>
+        <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 12px'}}>
+          ✍️ Author Application
+        </h3>
+        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+          <span style={{
+            padding: '6px 16px', borderRadius: '999px', fontWeight: '700', fontSize: '0.875rem',
+            backgroundColor: application.status === 'PENDING' ? '#fef3c7' : application.status === 'APPROVED' ? '#f0fdf4' : '#fef2f2',
+            color: application.status === 'PENDING' ? '#d97706' : application.status === 'APPROVED' ? '#16a34a' : '#dc2626'
+          }}>
+            {application.status === 'PENDING' ? '⏳ Pending Review' : application.status === 'APPROVED' ? '✅ Approved!' : '❌ Rejected'}
+          </span>
+          {application.adminNote && (
+            <p style={{color: '#6b7280', fontSize: '0.875rem', margin: 0}}>
+              Note: {application.adminNote}
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{
+      backgroundColor: 'white', borderRadius: '16px',
+      border: '1px solid #f0f0f0', padding: '24px',
+      marginBottom: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+    }}>
+      <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 8px'}}>
+        ✍️ Become an Author
+      </h3>
+      <p style={{color: '#6b7280', fontSize: '0.875rem', margin: '0 0 16px'}}>
+        Apply to write articles and share your football knowledge with the AwayDays community.
+      </p>
+
+      {!showForm ? (
+        <button onClick={() => setShowForm(true)} style={{
+          backgroundColor: '#2563eb', color: 'white',
+          padding: '10px 24px', borderRadius: '10px', border: 'none',
+          fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+        }}>
+          Apply Now →
+        </button>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          {error && (
+            <div style={{backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '10px 14px', borderRadius: '8px', marginBottom: '12px', fontSize: '0.875rem'}}>
+              {error}
+            </div>
+          )}
+          <div style={{marginBottom: '12px'}}>
+            <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '6px'}}>
+              Why do you want to become an author?
+            </label>
+            <textarea
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              required rows={3}
+              placeholder="Tell us about your football knowledge and writing experience..."
+              style={{
+                width: '100%', padding: '12px 14px', borderRadius: '10px',
+                border: '2px solid #f0f0f0', fontSize: '0.875rem', outline: 'none',
+                resize: 'vertical', boxSizing: 'border-box', fontFamily: 'inherit'
+              }}
+            />
+          </div>
+          <div style={{marginBottom: '16px'}}>
+            <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '6px'}}>
+              Upload CV / Writing Sample (PDF)
+            </label>
+            <input
+              type="file" accept=".pdf"
+              onChange={e => setPdf(e.target.files[0])}
+              required
+              style={{fontSize: '0.875rem'}}
+            />
+          </div>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <button type="submit" disabled={submitting} style={{
+              backgroundColor: submitting ? '#93c5fd' : '#2563eb',
+              color: 'white', padding: '10px 24px', borderRadius: '10px',
+              border: 'none', fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+            }}>
+              {submitting ? 'Submitting...' : 'Submit Application'}
+            </button>
+            <button type="button" onClick={() => setShowForm(false)} style={{
+              backgroundColor: 'white', color: '#6b7280',
+              padding: '10px 24px', borderRadius: '10px',
+              border: '1px solid #e5e7eb', fontWeight: '600', cursor: 'pointer', fontSize: '0.875rem'
+            }}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   )
 }
