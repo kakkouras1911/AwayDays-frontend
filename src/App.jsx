@@ -15,6 +15,7 @@ import AdminPanel from './pages/AdminPanel'
 import Articles from './pages/Articles'
 import ArticleDetail from './pages/ArticleDetail'
 import WriteArticle from './pages/WriteArticle'
+import Compare from './pages/Compare'
 
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
         <Route path="/articles/new" element={<WriteArticle />} />
-        
+        <Route path="/compare" element={<Compare />} />
         
       </Routes>
       <ChatWidget />

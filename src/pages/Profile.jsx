@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getReviewsByUser, deleteReview, getUserProfile, updateBio, uploadAvatar } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { getUserApplications, applyForAuthor } from '../services/api'
+import { getBucketList } from '../services/api'
 
 export default function Profile() {
   const { user, logoutUser } = useAuth()
@@ -14,18 +15,22 @@ export default function Profile() {
   const [bioText, setBioText] = useState('')
   const [savingBio, setSavingBio] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [bucketList, setBucketList] = useState([])
+  const [activeTab, setActiveTab] = useState('reviews')
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
     const fetchData = async () => {
       try {
-        const [reviewsRes, profileRes] = await Promise.all([
+        const [reviewsRes, profileRes, bucketRes] = await Promise.all([
           getReviewsByUser(user.userId),
-          getUserProfile(user.userId)
+          getUserProfile(user.userId),
+          getBucketList(user.userId)
         ])
         setReviews(reviewsRes.data)
         setProfile(profileRes.data)
         setBioText(profileRes.data.bio || '')
+        setBucketList(bucketRes.data)
       } catch (err) {
         console.error('Failed to fetch data', err)
       } finally {
@@ -199,91 +204,149 @@ export default function Profile() {
       {/* Reviews */}
       <div style={{maxWidth: '900px', margin: '0 auto', padding: '40px 24px'}}>
         <ApplyForAuthorSection userId={user.userId} />
-        <h2 style={{fontSize: '1.25rem', fontWeight: '800', color: '#1a1a2e', marginBottom: '20px'}}>
-          My Reviews
-        </h2>
+        {/* Tabs */}
+<div style={{display: 'flex', gap: '6px', marginBottom: '24px', backgroundColor: 'white', padding: '6px', borderRadius: '14px', border: '1px solid #f0f0f0'}}>
+  {[
+    { key: 'reviews', label: `📝 My Reviews (${reviews.length})` },
+    { key: 'bucket', label: `⭐ Bucket List (${bucketList.length})` },
+  ].map(tab => (
+    <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
+      flex: 1, padding: '10px 16px', borderRadius: '10px', border: 'none',
+      backgroundColor: activeTab === tab.key ? '#2563eb' : 'transparent',
+      color: activeTab === tab.key ? 'white' : '#6b7280',
+      fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+    }}>
+      {tab.label}
+    </button>
+  ))}
+</div>
 
-        {loading ? (
-          <div style={{textAlign: 'center', padding: '60px', color: '#6b7280'}}>Loading...</div>
-        ) : reviews.length === 0 ? (
-          <div style={{
-            textAlign: 'center', padding: '60px',
-            backgroundColor: 'white', borderRadius: '20px',
-            border: '1px solid #f0f0f0', color: '#6b7280'
-          }}>
-            <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
-            <p style={{fontWeight: '600', marginBottom: '8px', color: '#374151'}}>No reviews yet</p>
-            <p style={{fontSize: '0.875rem', marginBottom: '20px'}}>Start sharing your stadium experiences!</p>
-            <Link to="/stadiums" style={{
-              backgroundColor: '#2563eb', color: 'white',
-              padding: '10px 24px', borderRadius: '10px',
-              textDecoration: 'none', fontWeight: '700', fontSize: '0.875rem'
-            }}>
-              Browse Stadiums
-            </Link>
-          </div>
-        ) : (
-          <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-            {reviews.map(review => (
-              <div key={review.id} style={{
-                backgroundColor: 'white', borderRadius: '16px',
-                border: '1px solid #f0f0f0', padding: '24px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
-              }}>
-                <Link to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px'}}>
-                    <div>
-                      <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>{review.title}</h3>
-                      <p style={{color: '#2563eb', fontSize: '0.85rem', fontWeight: '600', margin: 0}}>{review.stadiumName}</p>
-                    </div>
-                    <div style={{
-                      backgroundColor: '#fef3c7', color: '#d97706',
-                      padding: '4px 14px', borderRadius: '999px',
-                      fontWeight: '800', fontSize: '0.875rem', whiteSpace: 'nowrap'
-                    }}>
-                      ⭐ {parseFloat(review.overallRating).toFixed(1)}
-                    </div>
-                  </div>
-                  <p style={{color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.6', margin: '0 0 10px'}}>
-                    {review.content.length > 120 ? review.content.substring(0, 120) + '...' : review.content}
-                  </p>
-                  <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#9ca3af'}}>
-                    {review.visitDate && (
-                      <span>📅 {new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}</span>
-                    )}
-                    <span>👍 {review.likeCount} likes</span>
-                  </div>
-                </Link>
-                <div style={{display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
-                  <Link to={`/reviews/${review.id}/edit`} style={{
-                    padding: '6px 16px', borderRadius: '8px',
-                    border: '1px solid #e5e7eb', backgroundColor: 'white',
-                    color: '#374151', textDecoration: 'none',
-                    fontSize: '0.8rem', fontWeight: '600'
-                  }}>
-                    ✏️ Edit
-                  </Link>
-                  <button onClick={async () => {
-                    if (window.confirm('Delete this review?')) {
-                      try {
-                        await deleteReview(review.id)
-                        setReviews(reviews.filter(r => r.id !== review.id))
-                      } catch (err) {
-                        console.error('Failed to delete', err)
-                      }
-                    }
-                  }} style={{
-                    padding: '6px 16px', borderRadius: '8px',
-                    border: '1px solid #fecaca', backgroundColor: '#fef2f2',
-                    color: '#dc2626', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer'
-                  }}>
-                    🗑️ Delete
-                  </button>
-                </div>
+{/* Reviews Tab */}
+{activeTab === 'reviews' && (
+  loading ? (
+    <div style={{textAlign: 'center', padding: '60px', color: '#6b7280'}}>Loading...</div>
+  ) : reviews.length === 0 ? (
+    <div style={{
+      textAlign: 'center', padding: '60px',
+      backgroundColor: 'white', borderRadius: '20px',
+      border: '1px solid #f0f0f0', color: '#6b7280'
+    }}>
+      <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
+      <p style={{fontWeight: '600', marginBottom: '8px', color: '#374151'}}>No reviews yet</p>
+      <p style={{fontSize: '0.875rem', marginBottom: '20px'}}>Start sharing your stadium experiences!</p>
+      <Link to="/stadiums" style={{
+        backgroundColor: '#2563eb', color: 'white',
+        padding: '10px 24px', borderRadius: '10px',
+        textDecoration: 'none', fontWeight: '700', fontSize: '0.875rem'
+      }}>
+        Browse Stadiums
+      </Link>
+    </div>
+  ) : (
+    <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+      {reviews.map(review => (
+        <div key={review.id} style={{
+          backgroundColor: 'white', borderRadius: '16px',
+          border: '1px solid #f0f0f0', padding: '24px',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+        }}>
+          <Link to={`/reviews/${review.id}`} style={{textDecoration: 'none'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px'}}>
+              <div>
+                <h3 style={{fontSize: '1rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>{review.title}</h3>
+                <p style={{color: '#2563eb', fontSize: '0.85rem', fontWeight: '600', margin: 0}}>{review.stadiumName}</p>
               </div>
-            ))}
+              <div style={{
+                backgroundColor: '#fef3c7', color: '#d97706',
+                padding: '4px 14px', borderRadius: '999px',
+                fontWeight: '800', fontSize: '0.875rem', whiteSpace: 'nowrap'
+              }}>
+                ⭐ {parseFloat(review.overallRating).toFixed(1)}
+              </div>
+            </div>
+            <p style={{color: '#6b7280', fontSize: '0.875rem', lineHeight: '1.6', margin: '0 0 10px'}}>
+              {review.content.length > 120 ? review.content.substring(0, 120) + '...' : review.content}
+            </p>
+            <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#9ca3af'}}>
+              {review.visitDate && (
+                <span>📅 {new Date(review.visitDate).toLocaleDateString('en-GB', {month: 'long', year: 'numeric'})}</span>
+              )}
+              <span>👍 {review.likeCount} likes</span>
+            </div>
+          </Link>
+          <div style={{display: 'flex', gap: '8px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
+            <Link to={`/reviews/${review.id}/edit`} style={{
+              padding: '6px 16px', borderRadius: '8px',
+              border: '1px solid #e5e7eb', backgroundColor: 'white',
+              color: '#374151', textDecoration: 'none',
+              fontSize: '0.8rem', fontWeight: '600'
+            }}>
+              ✏️ Edit
+            </Link>
+            <button onClick={async () => {
+              if (window.confirm('Delete this review?')) {
+                try {
+                  await deleteReview(review.id)
+                  setReviews(reviews.filter(r => r.id !== review.id))
+                } catch (err) {
+                  console.error('Failed to delete', err)
+                }
+              }
+            }} style={{
+              padding: '6px 16px', borderRadius: '8px',
+              border: '1px solid #fecaca', backgroundColor: '#fef2f2',
+              color: '#dc2626', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer'
+            }}>
+              🗑️ Delete
+            </button>
           </div>
-        )}
+        </div>
+      ))}
+    </div>
+  )
+)}
+
+{/* Bucket List Tab */}
+{activeTab === 'bucket' && (
+  <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px'}}>
+    {bucketList.length === 0 ? (
+      <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '60px', backgroundColor: 'white', borderRadius: '20px', border: '1px solid #f0f0f0', color: '#6b7280'}}>
+        <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>⭐</div>
+        <p style={{fontWeight: '600', color: '#374151', marginBottom: '8px'}}>No stadiums saved yet</p>
+        <p style={{fontSize: '0.875rem', marginBottom: '20px'}}>Browse stadiums and save ones you want to visit!</p>
+        <Link to="/stadiums" style={{backgroundColor: '#2563eb', color: 'white', padding: '10px 24px', borderRadius: '10px', textDecoration: 'none', fontWeight: '700', fontSize: '0.875rem'}}>
+          Browse Stadiums
+        </Link>
+      </div>
+    ) : bucketList.map(stadium => (
+      <Link key={stadium.id} to={`/stadiums/${stadium.id}`} style={{textDecoration: 'none'}}>
+        <div style={{
+          backgroundColor: 'white', borderRadius: '16px',
+          border: '1px solid #f0f0f0', overflow: 'hidden',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.2s'
+        }}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'translateY(0)' }}
+        >
+          {stadium.coverImageUrl ? (
+            <img src={stadium.coverImageUrl} alt={stadium.name} style={{width: '100%', height: '140px', objectFit: 'cover'}} />
+          ) : (
+            <div style={{height: '140px', background: 'linear-gradient(135deg, #1a1a2e, #0f3460)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem'}}>🏟️</div>
+          )}
+          <div style={{padding: '14px'}}>
+            <h3 style={{fontSize: '0.95rem', fontWeight: '700', color: '#1a1a2e', margin: '0 0 4px'}}>{stadium.name}</h3>
+            <p style={{color: '#6b7280', fontSize: '0.8rem', margin: '0 0 8px'}}>📍 {stadium.city}, {stadium.country}</p>
+            {stadium.averageRating && (
+              <span style={{backgroundColor: '#fef3c7', color: '#d97706', padding: '2px 10px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: '700'}}>
+                ⭐ {parseFloat(stadium.averageRating).toFixed(1)}
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+    ))}
+  </div>
+)}
       </div>
     </div>
   )

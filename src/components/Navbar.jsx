@@ -37,7 +37,8 @@ export default function Navbar() {
       {[
         { path: '/stadiums', label: 'Stadiums' },
         { path: '/leaderboard', label: 'Leaderboard' },
-        { path: '/articles', label: '✍️ Articles' },
+        { path: '/articles', label: 'Articles' },
+        {path: '/compare', label: 'Compare' },
         ...(user?.role === 'ADMIN' ? [{ path: '/admin', label: '⚙️ Admin' }] : [])
       ].map(link => (
         <Link

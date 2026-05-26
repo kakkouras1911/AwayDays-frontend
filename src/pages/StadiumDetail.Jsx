@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getStadiumById, getReviewsByStadium } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StadiumImage from '../components/StadiumImages'
+import { getBucketList, addToBucketList, removeFromBucketList, checkBucketList } from '../services/api'
 
 export default function StadiumDetail() {
   const { id } = useParams()
@@ -11,6 +12,8 @@ export default function StadiumDetail() {
   const [stadium, setStadium] = useState(null)
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
+  const [inBucketList, setInBucketList] = useState(false)
+  const [bucketLoading, setBucketLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +24,11 @@ export default function StadiumDetail() {
         ])
         setStadium(stadiumRes.data)
         setReviews(reviewsRes.data)
+        
+        if (user) {
+          const bucketRes = await checkBucketList(user.userId, id)
+          setInBucketList(bucketRes.data.inBucketList)
+        }
       } catch (err) {
         console.error('Failed to fetch stadium', err)
       } finally {
@@ -28,7 +36,7 @@ export default function StadiumDetail() {
       }
     }
     fetchData()
-  }, [id])
+  }, [id, user])
 
   if (loading) return (
     <div style={{textAlign: 'center', padding: '80px', color: '#6b7280'}}>
@@ -125,6 +133,36 @@ export default function StadiumDetail() {
                 {user ? '✏️ Write a Review' : '🔒 Login to Review'}
               </button>
             </div>
+            {user && (
+          <button
+            onClick={async () => {
+              setBucketLoading(true)
+              try {
+                if (inBucketList) {
+                  await removeFromBucketList(user.userId, id)
+                  setInBucketList(false)
+                } else {
+                  await addToBucketList(user.userId, id)
+                  setInBucketList(true)
+                }
+              } catch (err) {
+                console.error('Bucket list error', err)
+              } finally {
+                setBucketLoading(false)
+              }
+            }}
+            style={{
+              backgroundColor: inBucketList ? '#fef3c7' : 'white',
+              color: inBucketList ? '#d97706' : '#6b7280',
+              padding: '10px 20px', borderRadius: '10px',
+              border: `1px solid ${inBucketList ? '#fcd34d' : '#e5e7eb'}`,
+              fontWeight: '700', cursor: 'pointer', fontSize: '0.9rem',
+              transition: 'all 0.2s'
+            }}
+          >
+            {bucketLoading ? '...' : inBucketList ? '⭐ Saved' : '☆ Save to Bucket List'}
+          </button>
+        )}
 
             {reviews.length === 0 ? (
               <div style={{

@@ -69,3 +69,9 @@ export const getArticlesByAuthor = (authorId) => API.get(`/articles/author/${aut
 export const createArticle = (formData) => API.post('/articles', formData)
 export const publishArticle = (id) => API.patch(`/articles/${id}/publish`)
 export const deleteArticle = (id) => API.delete(`/articles/${id}`)
+
+// Bucket List
+export const getBucketList = (userId) => API.get(`/bucket-list/${userId}`)
+export const addToBucketList = (userId, stadiumId) => API.post(`/bucket-list/${userId}/${stadiumId}`)
+export const removeFromBucketList = (userId, stadiumId) => API.delete(`/bucket-list/${userId}/${stadiumId}`)
+export const checkBucketList = (userId, stadiumId) => API.get(`/bucket-list/${userId}/${stadiumId}/check`)
