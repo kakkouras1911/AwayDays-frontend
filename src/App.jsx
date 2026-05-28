@@ -16,6 +16,10 @@ import Articles from './pages/Articles'
 import ArticleDetail from './pages/ArticleDetail'
 import WriteArticle from './pages/WriteArticle'
 import Compare from './pages/Compare'
+import Shop from './pages/Shop'
+import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import OrderSuccess from './pages/OrderSuccess'
 
 
 function App() {
@@ -38,6 +42,10 @@ function App() {
         <Route path="/articles/:id" element={<ArticleDetail />} />
         <Route path="/articles/new" element={<WriteArticle />} />
         <Route path="/compare" element={<Compare />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/cart" element={<Cart />} />
+        <Route path="/shop/checkout" element={<Checkout />} />
+        <Route path="/shop/success" element={<OrderSuccess />} />
         
       </Routes>
       <ChatWidget />

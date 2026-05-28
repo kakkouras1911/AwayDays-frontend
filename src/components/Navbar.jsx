@@ -39,6 +39,7 @@ export default function Navbar() {
         { path: '/leaderboard', label: 'Leaderboard' },
         { path: '/articles', label: 'Articles' },
         {path: '/compare', label: 'Compare' },
+        {path: '/shop', label: 'Shop' },
         ...(user?.role === 'ADMIN' ? [{ path: '/admin', label: '⚙️ Admin' }] : [])
       ].map(link => (
         <Link
