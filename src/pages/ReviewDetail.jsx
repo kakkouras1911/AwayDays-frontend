@@ -262,13 +262,21 @@ export default function ReviewDetail() {
                 }}>
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
                     <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                      <div style={{
-                        width: '28px', height: '28px', borderRadius: '50%',
-                        backgroundColor: '#2563eb', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: '700'
-                      }}>
-                        {comment.username.charAt(0).toUpperCase()}
-                      </div>
+                      {user && user.username === comment.username && user.avatarUrl ? (
+                        <img
+                          src={`http://localhost:8080${user.avatarUrl}`}
+                          alt={comment.username}
+                          style={{width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover'}}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '28px', height: '28px', borderRadius: '50%',
+                          backgroundColor: '#2563eb', display: 'flex', alignItems: 'center',
+                          justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: '700'
+                        }}>
+                          {comment.username.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <span style={{fontWeight: '700', color: '#1a1a2e', fontSize: '0.875rem'}}>{comment.username}</span>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>

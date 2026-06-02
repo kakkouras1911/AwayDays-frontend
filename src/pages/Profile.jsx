@@ -6,7 +6,7 @@ import { getUserApplications, applyForAuthor } from '../services/api'
 import { getBucketList } from '../services/api'
 
 export default function Profile() {
-  const { user, logoutUser } = useAuth()
+  const { user, logoutUser, updateUser } = useAuth()
   const navigate = useNavigate()
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
@@ -65,6 +65,7 @@ export default function Profile() {
     try {
       const res = await uploadAvatar(user.userId, file)
       setProfile({ ...profile, avatarUrl: res.data.avatarUrl })
+      updateUser({ avatarUrl: res.data.avatarUrl })
     } catch (err) {
       console.error('Failed to upload avatar', err)
     } finally {

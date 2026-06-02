@@ -28,7 +28,7 @@ export default function Navbar() {
         
         {/* Logo */}
         <Link to="/" style={{display: 'flex', alignItems: 'center', textDecoration: 'none'}}>
-          <img src={logo} alt="AwayDays" style={{height: '36px', width: 'auto'}} />
+          <img src={logo} alt="AwayDays" style={{height: '65px', width: 'auto'}} />
         </Link>
 
         {/* Center Links */}
