@@ -47,7 +47,7 @@ export default function Shop() {
               Official Merchandise
             </p>
             <h1 style={{color: 'white', fontSize: '2.5rem', fontWeight: '900', margin: '0 0 8px'}}>
-              🛍️ AwayDays Shop
+               AwayDays Shop
             </h1>
             <p style={{color: '#94a3b8', margin: 0}}>
               Rep your away day passion with official AwayDays merch

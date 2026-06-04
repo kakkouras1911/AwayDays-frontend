@@ -58,7 +58,7 @@ const StadiumPicker = ({ label, search, setSearch, selected, setSelected, filter
           <img src={selected.coverImageUrl} alt={selected.name} style={{width: '100%', height: '160px', objectFit: 'cover'}} />
         ) : (
           <div style={{height: '160px', background: 'linear-gradient(135deg, #1a1a2e, #0f3460)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem'}}>
-            🏟️
+            
           </div>
         )}
         <div style={{padding: '16px'}}>
@@ -193,7 +193,7 @@ export default function Compare() {
         padding: '60px 24px', textAlign: 'center'
       }}>
         <h1 style={{color: 'white', fontSize: '2.5rem', fontWeight: '900', margin: '0 0 8px'}}>
-          ⚖️ Stadium Comparison
+           Stadium Comparison
         </h1>
         <p style={{color: '#94a3b8', margin: 0, fontSize: '1.1rem'}}>
           Compare two stadiums head to head

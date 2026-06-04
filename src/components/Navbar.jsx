@@ -35,11 +35,13 @@ export default function Navbar() {
   
     <div style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
       {[
+        {path: '/', label: 'Home' },
         { path: '/stadiums', label: 'Stadiums' },
         { path: '/leaderboard', label: 'Leaderboard' },
         { path: '/articles', label: 'Articles' },
         {path: '/compare', label: 'Compare' },
         {path: '/shop', label: 'Shop' },
+        { path: '/about', label: 'About' },
         ...(user?.role === 'ADMIN' ? [{ path: '/admin', label: '⚙️ Admin' }] : [])
       ].map(link => (
         <Link

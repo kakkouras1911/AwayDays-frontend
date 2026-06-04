@@ -41,9 +41,9 @@ export default function Leaderboard() {
     .slice(0, 6)
 
   const tabs = [
-    { key: 'topRated', label: '🏆 Top Rated' },
-    { key: 'largest', label: '🏟️ Largest' },
-    { key: 'mostLiked', label: '👍 Most Liked' },
+    { key: 'topRated', label: ' Top Rated' },
+    { key: 'largest', label: ' Largest' },
+    { key: 'mostLiked', label: ' Most Liked' },
   ]
 
   const getMedal = (index) => {
@@ -109,7 +109,7 @@ export default function Leaderboard() {
         padding: '60px 24px', textAlign: 'center'
       }}>
         <h1 style={{color: 'white', fontSize: '2.5rem', fontWeight: '900', margin: '0 0 8px', letterSpacing: '-0.02em'}}>
-          🏆 Leaderboard
+           Leaderboard
         </h1>
         <p style={{color: '#94a3b8', fontSize: '1.1rem', margin: 0}}>
           The best stadiums and reviews on AwayDays

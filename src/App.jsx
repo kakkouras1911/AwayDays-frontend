@@ -20,6 +20,7 @@ import Shop from './pages/Shop'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import OrderSuccess from './pages/OrderSuccess'
+import About from './pages/About'
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/shop/cart" element={<Cart />} />
         <Route path="/shop/checkout" element={<Checkout />} />
         <Route path="/shop/success" element={<OrderSuccess />} />
+        <Route path="/about" element={<About />} />
         
       </Routes>
       <ChatWidget />

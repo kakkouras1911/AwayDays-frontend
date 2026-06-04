@@ -37,7 +37,7 @@ export default function Articles() {
               From Our Authors
             </p>
             <h1 style={{color: 'white', fontSize: '2.5rem', fontWeight: '900', margin: '0 0 8px'}}>
-              ✍️ Articles
+               Articles
             </h1>
             <p style={{color: '#94a3b8', margin: 0}}>
               In-depth football stadium guides and stories

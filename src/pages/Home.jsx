@@ -63,7 +63,7 @@ export default function Home() {
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255,255,255,0.1)'
           }}>
-            🏟️ {stadiums.length.toLocaleString()} Stadiums Worldwide
+             {stadiums.length.toLocaleString()} Stadiums Worldwide
           </div>
           
           <h1 style={{

@@ -208,7 +208,7 @@ export default function Profile() {
         {/* Tabs */}
 <div style={{display: 'flex', gap: '6px', marginBottom: '24px', backgroundColor: 'white', padding: '6px', borderRadius: '14px', border: '1px solid #f0f0f0'}}>
   {[
-    { key: 'reviews', label: `📝 My Reviews (${reviews.length})` },
+    { key: 'reviews', label: ` My Reviews (${reviews.length})` },
     { key: 'bucket', label: `⭐ Bucket List (${bucketList.length})` },
   ].map(tab => (
     <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
@@ -232,7 +232,7 @@ export default function Profile() {
       backgroundColor: 'white', borderRadius: '20px',
       border: '1px solid #f0f0f0', color: '#6b7280'
     }}>
-      <div style={{fontSize: '2.5rem', marginBottom: '12px'}}>📝</div>
+      <div style={{fontSize: '2.5rem', marginBottom: '12px'}}></div>
       <p style={{fontWeight: '600', marginBottom: '8px', color: '#374151'}}>No reviews yet</p>
       <p style={{fontSize: '0.875rem', marginBottom: '20px'}}>Start sharing your stadium experiences!</p>
       <Link to="/stadiums" style={{
@@ -399,7 +399,7 @@ function ApplyForAuthorSection({ userId }) {
         marginBottom: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
       }}>
         <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 12px'}}>
-          ✍️ Author Application
+           Author Application
         </h3>
         <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
           <span style={{
@@ -426,7 +426,7 @@ function ApplyForAuthorSection({ userId }) {
       marginBottom: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
     }}>
       <h3 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 8px'}}>
-        ✍️ Become an Author
+         Become an Author
       </h3>
       <p style={{color: '#6b7280', fontSize: '0.875rem', margin: '0 0 16px'}}>
         Apply to write articles and share your football knowledge with the AwayDays community.

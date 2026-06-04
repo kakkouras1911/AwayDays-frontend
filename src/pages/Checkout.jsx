@@ -143,7 +143,7 @@ function CheckoutForm() {
             <div style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #f0f0f0', padding: '24px', marginBottom: '16px'}}>
               <h2 style={{fontSize: '1rem', fontWeight: '800', color: '#1a1a2e', margin: '0 0 16px'}}>💳 Payment Details</h2>
               <p style={{color: '#6b7280', fontSize: '0.8rem', margin: '0 0 12px'}}>
-                🔒 Sandbox mode — use card number <strong>4242 4242 4242 4242</strong>, any future date, any CVC
+               
               </p>
               <div style={{
                 padding: '14px 16px', borderRadius: '10px',

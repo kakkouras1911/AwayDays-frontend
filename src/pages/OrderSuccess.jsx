@@ -11,7 +11,7 @@ export default function OrderSuccess() {
         textAlign: 'center', maxWidth: '500px', width: '100%',
         boxShadow: '0 20px 60px rgba(0,0,0,0.1)'
       }}>
-        <div style={{fontSize: '4rem', marginBottom: '16px'}}>🎉</div>
+        <div style={{fontSize: '4rem', marginBottom: '16px'}}></div>
         <h1 style={{fontSize: '1.75rem', fontWeight: '900', color: '#1a1a2e', margin: '0 0 12px'}}>
           Order Confirmed!
         </h1>
