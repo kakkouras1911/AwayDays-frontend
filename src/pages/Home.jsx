@@ -123,8 +123,8 @@ export default function Home() {
       <div style={{backgroundColor: 'white', borderBottom: '1px solid #f0f0f0', padding: '0'}}>
         <div style={{maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}>
           {[
-            { value: stadiums.length.toLocaleString(), label: 'Stadiums', icon: '🏟️' },
-            { value: '110+', label: 'Countries', icon: '🌍' },
+            { value: stadiums.length.toLocaleString(), label: 'Stadiums', icon: '' },
+            { value: '110+', label: 'Countries', icon: '' },
             { value: recentReviews.length + '+', label: 'Recent Reviews', icon: '⭐' },
           ].map((stat, i) => (
             <div key={i} style={{

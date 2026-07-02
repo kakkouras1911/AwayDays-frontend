@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { getReviewById, getCommentsByReview, addComment, likeReview, unlikeReview, getLikes, deleteComment } from '../services/api'
+// ΠΡΟΣΟΧΗ: Πρόσθεσα το deleteReview στα imports!
+import { getReviewById, getCommentsByReview, addComment, likeReview, unlikeReview, getLikes, deleteComment, deleteReview } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
 export default function ReviewDetail() {
@@ -13,6 +14,9 @@ export default function ReviewDetail() {
   const [commentText, setCommentText] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  
+  // ΝΕΟ STATE: Κρατάει το URL της εικόνας που θέλουμε να κάνουμε expand
+  const [expandedPhoto, setExpandedPhoto] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,11 +71,25 @@ export default function ReviewDetail() {
   }
 
   const handleDeleteComment = async (commentId) => {
+    // Προσθέτουμε ένα confirm για ασφάλεια
+    if (!window.confirm('Are you sure you want to delete this comment?')) return;
     try {
       await deleteComment(commentId)
       setComments(comments.filter(c => c.id !== commentId))
     } catch (err) {
       console.error('Failed to delete comment', err)
+    }
+  }
+
+  // ΝΕΑ ΛΕΙΤΟΥΡΓΙΑ: Delete Review από Admin
+  const handleAdminDeleteReview = async () => {
+    if (!window.confirm('ADMIN ACTION: Are you sure you want to completely delete this review?')) return;
+    try {
+      await deleteReview(id)
+      navigate(`/stadiums/${review.stadiumId}`) // Μετά τη διαγραφή, γυρνάμε στη σελίδα του γηπέδου
+    } catch (err) {
+      console.error('Failed to delete review', err)
+      alert('Error deleting review. Check console.');
     }
   }
 
@@ -87,7 +105,29 @@ export default function ReviewDetail() {
   )
 
   return (
-    <div style={{backgroundColor: '#f8f9fa', minHeight: '100vh'}}>
+    <div style={{backgroundColor: '#f8f9fa', minHeight: '100vh', position: 'relative'}}>
+
+      {/* ΝΕΟ: Photo Expand Overlay (Lightbox) */}
+      {expandedPhoto && (
+        <div 
+          style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+            backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 9999,
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={() => setExpandedPhoto(null)} // Κλείνει αν πατήσεις οπουδήποτε
+        >
+          <img 
+            src={`http://localhost:8080${expandedPhoto}`} 
+            alt="Expanded review" 
+            style={{maxWidth: '90%', maxHeight: '90%', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)'}}
+          />
+          <div style={{position: 'absolute', top: '20px', right: '30px', color: 'white', fontSize: '2rem', fontWeight: 'bold'}}>
+            &times;
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div style={{
@@ -165,7 +205,7 @@ export default function ReviewDetail() {
             </div>
           )}
 
-          {/* Photos */}
+          {/* Photos - Τροποποιημένο για Expand! */}
           {review.photoUrls && review.photoUrls.length > 0 && (
             <div style={{marginBottom: '28px'}}>
               <h3 style={{fontSize: '0.8rem', fontWeight: '700', color: '#9ca3af', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.08em'}}>
@@ -175,30 +215,49 @@ export default function ReviewDetail() {
                 {review.photoUrls.map((url, index) => (
                   <img key={index} src={`http://localhost:8080${url}`}
                     alt={`Review photo ${index + 1}`}
-                    style={{width: '160px', height: '160px', objectFit: 'cover', borderRadius: '12px', border: '1px solid #f0f0f0'}}
+                    onClick={() => setExpandedPhoto(url)} // ΝΕΟ: Ενεργοποιεί το modal
+                    style={{
+                      width: '160px', height: '160px', objectFit: 'cover', 
+                      borderRadius: '12px', border: '1px solid #f0f0f0', 
+                      cursor: 'pointer', transition: 'transform 0.2s'
+                    }}
+                    onMouseOver={(e) => e.target.style.transform = 'scale(1.03)'} // Εφεδάκι hover
+                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                   />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Like + Date */}
-          <div style={{display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '20px', borderTop: '1px solid #f3f4f6'}}>
-            <button onClick={handleLike} style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '10px 20px', borderRadius: '999px',
-              border: `2px solid ${likes.isLiked ? '#2563eb' : '#e5e7eb'}`,
-              backgroundColor: likes.isLiked ? '#eff6ff' : 'white',
-              color: likes.isLiked ? '#2563eb' : '#6b7280',
-              cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem',
-              transition: 'all 0.2s'
-            }}>
-              👍 {likes.likeCount} {likes.likeCount === 1 ? 'Like' : 'Likes'}
-            </button>
-            {review.createdAt && (
-              <span style={{color: '#9ca3af', fontSize: '0.85rem'}}>
-                {new Date(review.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'})}
-              </span>
+          {/* Like + Date + ADMIN DELETE REVIEW BUTTON */}
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '20px', borderTop: '1px solid #f3f4f6'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+              <button onClick={handleLike} style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '10px 20px', borderRadius: '999px',
+                border: `2px solid ${likes.isLiked ? '#2563eb' : '#e5e7eb'}`,
+                backgroundColor: likes.isLiked ? '#eff6ff' : 'white',
+                color: likes.isLiked ? '#2563eb' : '#6b7280',
+                cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem',
+                transition: 'all 0.2s'
+              }}>
+                👍 {likes.likeCount} {likes.likeCount === 1 ? 'Like' : 'Likes'}
+              </button>
+              {review.createdAt && (
+                <span style={{color: '#9ca3af', fontSize: '0.85rem'}}>
+                  {new Date(review.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'})}
+                </span>
+              )}
+            </div>
+            
+            {/* Κουμπί Διαγραφής Review αποκλειστικά για ADMIN */}
+            {user && user.role === 'ADMIN' && (
+              <button onClick={handleAdminDeleteReview} style={{
+                backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5',
+                padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer'
+              }}>
+                🗑️ Delete Review (Admin)
+              </button>
             )}
           </div>
         </div>
@@ -262,9 +321,10 @@ export default function ReviewDetail() {
                 }}>
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
                     <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                      {user && user.username === comment.username && user.avatarUrl ? (
+                      {/* Εδώ λέμε στη React: Αν το σχόλιο έχει avatarUrl, δείξ'το! */}
+                      {comment.avatarUrl ? (
                         <img
-                          src={`http://localhost:8080${user.avatarUrl}`}
+                          src={`http://localhost:8080${comment.avatarUrl}`}
                           alt={comment.username}
                           style={{width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover'}}
                         />
@@ -283,12 +343,14 @@ export default function ReviewDetail() {
                       <span style={{color: '#9ca3af', fontSize: '0.8rem'}}>
                         {comment.createdAt && new Date(comment.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'})}
                       </span>
-                      {user && user.username === comment.username && (
+                      
+                      {/* ΝΕΟ: Το κουμπί Delete εμφανίζεται σε δικά σου σχόλια Ή αν είσαι ADMIN */}
+                      {user && (user.username === comment.username || user.role === 'ADMIN') && (
                         <button onClick={() => handleDeleteComment(comment.id)} style={{
                           color: '#ef4444', background: 'none', border: 'none',
                           cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600'
                         }}>
-                          Delete
+                          {user.role === 'ADMIN' && user.username !== comment.username ? 'Delete (Admin)' : 'Delete'}
                         </button>
                       )}
                     </div>
