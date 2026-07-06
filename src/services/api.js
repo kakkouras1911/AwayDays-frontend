@@ -21,6 +21,7 @@ export const signup = (data) => API.post('/auth/signup', data)
 export const getStadiums = () => API.get('/stadiums')
 export const getStadiumById = (id) => API.get(`/stadiums/${id}`)
 export const getStadiumsByCountry = (country) => API.get(`/stadiums/country/${country}`)
+export const createStadium = (stadium) => API.post('/stadiums', stadium)
 
 // Reviews
 export const createReview = (data) => API.post('/reviews', data)

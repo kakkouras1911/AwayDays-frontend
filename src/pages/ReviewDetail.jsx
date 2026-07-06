@@ -256,7 +256,7 @@ export default function ReviewDetail() {
                 backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5',
                 padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer'
               }}>
-                🗑️ Delete Review (Admin)
+                🗑️ Delete Review 
               </button>
             )}
           </div>
@@ -350,7 +350,7 @@ export default function ReviewDetail() {
                           color: '#ef4444', background: 'none', border: 'none',
                           cursor: 'pointer', fontSize: '0.8rem', fontWeight: '600'
                         }}>
-                          {user.role === 'ADMIN' && user.username !== comment.username ? 'Delete (Admin)' : 'Delete'}
+                          {user.role === 'ADMIN' && user.username !== comment.username ? 'Delete ' : 'Delete'}
                         </button>
                       )}
                     </div>

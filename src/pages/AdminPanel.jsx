@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { getAllApplications, approveApplication, rejectApplication, getAllProducts, createProduct, updateProduct, deleteProduct, toggleProduct } from '../services/api'
+import { getAllApplications, approveApplication, rejectApplication, getAllProducts, createProduct, updateProduct, deleteProduct, toggleProduct, createStadium } from '../services/api'
 
 export default function AdminPanel() {
   const { user } = useAuth()
@@ -16,6 +16,11 @@ export default function AdminPanel() {
   const [productForm, setProductForm] = useState({
     name: '', description: '', price: '', category: '', sizes: '', imageUrl: '', stock: 100
   })
+  const [showStadiumForm, setShowStadiumForm] = useState(false)
+  const [stadiumForm, setStadiumForm] = useState({
+    name: '', city: '', country: '', capacity: '', homeTeam: '', coverImageUrl: ''
+  })
+  const [stadiumPhoto, setStadiumPhoto] = useState(null)
 
   useEffect(() => {
     if (!user || user.role !== 'ADMIN') { navigate('/'); return }
@@ -123,11 +128,43 @@ export default function AdminPanel() {
     }
   }
 
+  const handleCreateStadium = async (e) => {
+  e.preventDefault()
+
+  try {
+    const payload = {
+      name: stadiumForm.name.trim(),
+      city: stadiumForm.city.trim(),
+      country: stadiumForm.country.trim(),
+      capacity: stadiumForm.capacity ? Number(stadiumForm.capacity) : null,
+      homeTeam: stadiumForm.homeTeam?.trim() || null,
+      coverImageUrl: stadiumForm.coverImageUrl?.trim() || null
+    }
+
+    await createStadium(payload)
+
+    setShowStadiumForm(false)
+    setStadiumForm({
+      name: '',
+      city: '',
+      country: '',
+      capacity: '',
+      homeTeam: '',
+      coverImageUrl: ''
+    })
+    setStadiumPhoto(null)
+    alert('Stadium created successfully!')
+  } catch (err) {
+    console.error('Failed to create stadium', err)
+  }
+}
+
   const tabs = [
-    { key: 'pending', label: '⏳ Pending', count: applications.filter(a => a.status === 'PENDING').length },
+    { key: 'pending', label: ' Pending', count: applications.filter(a => a.status === 'PENDING').length },
     { key: 'approved', label: '✅ Approved', count: applications.filter(a => a.status === 'APPROVED').length },
     { key: 'rejected', label: '❌ Rejected', count: applications.filter(a => a.status === 'REJECTED').length },
-    { key: 'products', label: '🛍️ Products', count: products.length },
+    { key: 'products', label: ' Products', count: products.length },
+    { key: 'stadiums', label: ' Stadiums', count: null },
   ]
 
   return (
@@ -158,12 +195,12 @@ export default function AdminPanel() {
               color: activeTab === tab.key ? 'white' : '#6b7280',
               fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
             }}>
-              {tab.label} ({tab.count})
+              {tab.label}{tab.count !== null ? ` (${tab.count})` : ''}
             </button>
           ))}
         </div>
 
-        {activeTab !== 'products' && (loading ? (
+        {activeTab !== 'products' && activeTab !== 'stadiums' && (loading ? (
           <div style={{textAlign: 'center', padding: '60px', color: '#6b7280'}}>Loading...</div>
         ) : filtered.length === 0 ? (
           <div style={{textAlign: 'center', padding: '60px', backgroundColor: 'white', borderRadius: '16px', border: '1px solid #f0f0f0', color: '#6b7280'}}>
@@ -181,7 +218,7 @@ export default function AdminPanel() {
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px'}}>
                   <div>
                     <p style={{color: '#9ca3af', fontSize: '0.8rem', margin: '0 0 4px'}}>
-                      User ID: {app.userId}
+                      
                     </p>
                     <p style={{color: '#6b7280', fontSize: '0.875rem', margin: '0 0 8px'}}>
                       Applied: {new Date(app.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'})}
@@ -255,6 +292,69 @@ export default function AdminPanel() {
             ))}
           </div>
         ))}
+
+        {activeTab === 'stadiums' && (
+          <div>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+              <h2 style={{fontSize: '1.1rem', fontWeight: '800', color: '#1a1a2e', margin: 0}}>Add New Stadium</h2>
+              <button onClick={() => setShowStadiumForm(!showStadiumForm)} style={{
+                backgroundColor: '#2563eb', color: 'white',
+                padding: '10px 20px', borderRadius: '10px', border: 'none',
+                fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+              }}>
+                {showStadiumForm ? 'Cancel' : '+ Add Stadium'}
+              </button>
+            </div>
+
+            {showStadiumForm && (
+              <div style={{backgroundColor: 'white', borderRadius: '16px', border: '1px solid #f0f0f0', padding: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)'}}>
+                <form onSubmit={handleCreateStadium}>
+                  <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px'}}>
+                    {[
+                      { label: 'Stadium Name ', key: 'name', required: true },
+                      { label: 'City ', key: 'city', required: true },
+                      { label: 'Country ', key: 'country', required: true },
+                      { label: 'Capacity', key: 'capacity', required: false },
+                      { label: 'Home Team', key: 'homeTeam', required: false },
+
+                    ].map(field => (
+                      <div key={field.key}>
+                        <label style={{display: 'block', fontSize: '0.8rem', fontWeight: '600', color: '#374151', marginBottom: '4px'}}>{field.label}</label>
+                        <input
+                          type="text" required={field.required}
+                          value={stadiumForm[field.key]}
+                          onChange={e => setStadiumForm({...stadiumForm, [field.key]: e.target.value})}
+                          style={{width: '100%', padding: '10px 12px', borderRadius: '8px', border: '2px solid #f0f0f0', fontSize: '0.875rem', outline: 'none', boxSizing: 'border-box'}}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{marginBottom: '16px'}}>
+                    <label style={{display: 'block', fontSize: '0.8rem', fontWeight: '600', color: '#374151', marginBottom: '4px'}}>Stadium Photo (JPG, PNG or WebP — max 5MB each)</label>
+                    <input
+                      type="file"
+                      accept="image/jpeg,.jpg"
+                      onChange={(e) => setStadiumPhoto(e.target.files?.[0] || null)}
+                      style={{fontSize: '0.875rem', color: '#374151'}}
+                    />
+                    {stadiumPhoto && (
+                      <p style={{margin: '8px 0 0', fontSize: '0.8rem', color: '#6b7280'}}>
+                        Selected: {stadiumPhoto.name}
+                      </p>
+                    )}
+                  </div>
+                  <button type="submit" style={{
+                    backgroundColor: '#2563eb', color: 'white',
+                    padding: '10px 24px', borderRadius: '8px', border: 'none',
+                    fontWeight: '700', cursor: 'pointer', fontSize: '0.875rem'
+                  }}>
+                    ✅ Create Stadium
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Products Tab */}
         {activeTab === 'products' && (
